@@ -59,6 +59,28 @@ import "https://github.com/mrdavey/ez-flashloan/blob/remix/contracts/aave/ILendi
 
 
 contract MyfirstFlashLoan is FlashLoanReceiverBase(address(0x506B0B2CF20FAA8f38a4E2B524EE43e1f4458Cc5)) {
+
+  struct Token {
+      string name;
+      address tokenContract;
+    }
+
+    mapping (string => Token) tokens;
+    address[] public tokenProjects;
+    
+    function setToken(string memory _name, address _tokenContract) public {
+        Token storage token = tokens[_name];
+        
+        token.name = _name;
+        token.tokenContract = _tokenContract;
+        
+        tokenProjects.push(_tokenContract);
+    }
+    
+    function getToken(string memory _name) view public returns (string memory, address) {
+        return (tokens[_name].name, tokens[_name].tokenContract);
+    }
+    
   function flashLoan(uint256 newamount, address _token) external {
     bytes memory _params = "0x0";
     address exchangeAddress = addressesProvider.getLendingPool();
